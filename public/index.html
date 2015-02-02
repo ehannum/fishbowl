@@ -1,15 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="fishbowl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
   <link rel="stylesheet" href="res/styles.css">
+  <script src="src/lib/angular.min.js"></script>
+  <script src="src/lib/angular-route.min.js"></script>
+  <script src="src/fishbowl.js"></script>
+  <script src="src/SplashController.js"></script>
+  <script src="src/LobbyController.js"></script>
   <title>Fishbowl</title>
 </head>
 <body>
   <header>
     <h1>Fishbowl</h1>
   </header>
-  <p>LOADING...</p>
+  <div class="centered-content" ng-view>
+  </div>
 </body>
 </html>
