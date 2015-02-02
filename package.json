@@ -1,0 +1,22 @@
+{
+  "name": "fishbowl",
+  "version": "0.0.0",
+  "description": "A game.",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ehannum/fishbowl.git"
+  },
+  "author": "Eric Hannum",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/ehannum/fishbowl/issues"
+  },
+  "homepage": "https://github.com/ehannum/fishbowl",
+  "dependencies": {
+    "express": "~4.11.2"
+  }
+}
