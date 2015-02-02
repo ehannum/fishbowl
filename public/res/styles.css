@@ -1,0 +1,26 @@
+html {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  padding-top: 45px;
+}
+
+body {
+  color: #333;
+}
+
+header {
+  width: 100%;
+  position: fixed;
+  display: inline-block;
+  top: 0;
+  left: 0;
+  background-color: #333;
+  color: #FFF;
+  padding: 5px;
+}
+
+h1 {
+  font-size: 35px;
+  line-height: 35px;
+  padding: 0;
+  margin: 0;
+}
