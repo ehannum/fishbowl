@@ -1,6 +1,4 @@
 fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeout', function ($scope, $rootScope, $http, $timeout) {
-  $scope.cards = [{player:'Joe', answer:'Yerba'},{player:'Lisa', answer:'Mostidas'},{player:'Brian', answer:'Stretch Armstrong'}];
-
   $scope.players = [];
   $scope.answers = [];
 
