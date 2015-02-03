@@ -11,10 +11,10 @@ var fishbowl = angular.module('fishbowl', ['ngRoute'])
     controller: 'LobbyController',
     templateUrl: 'templates/lobby.html'
   })
-  // .when('/game/:id', {
-  //   controller: 'GameController',
-  //   templateUrl: 'templates/game.html'
-  // })
+  .when('/game', {
+    controller: 'GameController',
+    templateUrl: 'templates/game.html'
+  })
   .otherwise({redirectTo: '/404'});
 }])
 .run(['$rootScope', function ($rootScope) {
