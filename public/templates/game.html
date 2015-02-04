@@ -1,7 +1,10 @@
-<p ng-hide="players.length">Waiting for other players...</p>
-<div class="answers" ng-repeat="answer in answers">
-  <p>{{answer}}</p>
+<div class="answers-window vertical-split">
+  <p ng-hide="answers.length">{{prompt}}</p>
+  <div class="answer-card" ng-repeat="answer in answers">
+    <p>{{answer}}</p>
+  </div>
 </div>
-<div class="players" ng-repeat="player in players">
-  <p>{{player}}</p>
+<div class="players-window vertical-split">
+  <p ng-hide="players.length">Waiting for other players...</p>
+  <h1 class="player-card" ng-repeat="player in players">{{player}}</h1>
 </div>

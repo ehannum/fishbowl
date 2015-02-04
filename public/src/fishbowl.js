@@ -17,7 +17,11 @@ var fishbowl = angular.module('fishbowl', ['ngRoute'])
   })
   .otherwise({redirectTo: '/404'});
 }])
-.run(['$rootScope', function ($rootScope) {
+.run(['$rootScope', '$location', function ($rootScope, $location) {
+
+  // on page refresh, redirect to root url every time
+  $location.path('/');
+
   $rootScope.username = '';
   $rootScope.room = null;
   $rootScope.socket = null;
