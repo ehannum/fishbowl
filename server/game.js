@@ -1,30 +1,24 @@
 exports.rooms = [
   {
     prompt: 'Answer a question.',
-    players: [
-      {player:'Joe', answer:'Yerba'},
-      {player:'Lisa', answer:'Mostidas'},
-      {player:'Brian', answer:'Stretch Armstrong'}
-    ]
+    players: {
+      B: {player:'Joe', answer:'Yerba'},
+      U: {player:'Lisa', answer:'Mostidas'},
+      H: {player:'Brian', answer:'Stretch Armstrong'}
+    }
   }
 ];
 
-exports.joinRoom = function (user, room) {
-  var exists = true;
-
+exports.joinRoom = function (user, room, id) {
   if (!exports.rooms[room]) {
-    exists = false;
     exports.rooms.push({prompt:'', players: []});
   }
-  exports.rooms[room].players.push({player: user, answer: null});
-
-  return exists;
+  exports.rooms[room].players[id] = {player: user, answer: null};
 };
 
-exports.leaveRoom = function (user, room) {
-
-};
-
-var Bowl = function () {
-
+exports.leaveRoom = function (id, room) {
+  delete exports.rooms[room].players[id];
+  if (exports.rooms[room].players.length === 0) {
+    exports.rooms[room] = null;
+  }
 };

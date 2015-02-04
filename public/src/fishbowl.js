@@ -20,4 +20,5 @@ var fishbowl = angular.module('fishbowl', ['ngRoute'])
 .run(['$rootScope', function ($rootScope) {
   $rootScope.username = '';
   $rootScope.room = null;
+  $rootScope.socket = null;
 }]);

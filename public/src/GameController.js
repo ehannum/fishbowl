@@ -24,8 +24,5 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     return result;
   };
 
-  var socket = io();
-  console.log(socket);
-
   $timeout(unzipCards, 2000);
 }]);
