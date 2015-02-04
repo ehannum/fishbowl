@@ -9,6 +9,11 @@ var game = require('./game.js');
 
 app.use(express.static('public'));
 
+app.get('/room', function (req, res) {
+  var room = req.url.split('?')[1];
+  res.send(game.rooms[room]);
+});
+
 // -- SOCKET.IO
 
 io.on('connection', function (socket) {

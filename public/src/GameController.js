@@ -1,15 +1,26 @@
 fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeout', function ($scope, $rootScope, $http, $timeout) {
   $scope.players = [];
   $scope.answers = [];
+  $scope.prompt = '';
 
-  var unzipCards = function () {
-    for (var i = 0; i < $scope.cards.length; i++) {
-      $scope.players.push($scope.cards[i].player);
-      $scope.answers.push($scope.cards[i].answer);
+  $rootScope.socket.on('join-leave', function (data) {
+    unzipCards(data);
+    $scope.$digest();
+  });
+
+  var unzipCards = function (stack) {
+    var players = [];
+    var answers = [];
+
+    for (var card in stack) {
+      players.push(stack[card].player);
+      if (stack[card].answer) {
+        answers.push(stack[card].answer);
+      }
     }
 
-    $scope.players = shuffle($scope.players);
-    $scope.answers = shuffle($scope.answers);
+    $scope.players = shuffle(players);
+    $scope.answers = shuffle(answers);
   };
 
   var shuffle = function (arr) {
@@ -24,5 +35,8 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     return result;
   };
 
-  $timeout(unzipCards, 2000);
+  $http.get('/room?0').success(function (data) {
+    $scope.prompt = data.prompt;
+    unzipCards(data.players);
+  });
 }]);
