@@ -22,3 +22,21 @@ exports.leaveRoom = function (id, room) {
     exports.rooms[room] = null;
   }
 };
+
+exports.guess = function (room, player, guess) {
+  var answers = exports.rooms[room].players;
+  var correct = false;
+
+  for (var answer in answers) {
+    if (answers[answer].player === player && answers[answer].answer !== guess) {
+      break;
+    }
+
+    if (answers[answer].player === player && answers[answer].answer === guess) {
+      correct = true;
+      break;
+    }
+  }
+
+  return correct;
+};

@@ -25,6 +25,13 @@ io.on('connection', function (socket) {
     io.emit('join-leave', game.rooms[0].players);
   });
 
+  socket.on('guess', function (data) {
+    data.result = game.guess(data.room, data.player, data.answer);
+
+    console.log(data.username, 'guessed that', data.player, 'said', data.answer, '...', data.result ? 'CORRECT!' : 'WRONG!');
+    io.emit('guess', data);
+  });
+
   socket.on('disconnect', function () {
     game.leaveRoom(socket.id, 0);
 

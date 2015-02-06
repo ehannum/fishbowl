@@ -26,9 +26,12 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $scope.submit = function () {
     $rootScope.socket.emit('guess', {
+      username: $rootScope.username,
+      room: $rootScope.room,
       player: $scope.players[$scope.selectedPlayer],
       answer: $scope.answers[$scope.selectedAnswer]
     });
+    $scope.cancel();
   };
 
   $scope.cancel = function () {
@@ -36,8 +39,15 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.selectedPlayer = null;
   };
 
+  // socket.io stuff. Remember to $digest() manually...
+
   $rootScope.socket.on('join-leave', function (data) {
     unzipCards(data);
+    $scope.$digest();
+  });
+
+  $rootScope.socket.on('guess', function (data) {
+    // broadcast results, switch players if !data.result
     $scope.$digest();
   });
 
@@ -67,6 +77,8 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
     return result;
   };
+
+  // initial room construction
 
   $http.get('/room?0').success(function (data) {
     $scope.prompt = data.prompt;
