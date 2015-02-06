@@ -4,7 +4,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.prompt = '';
 
   // This logic needs to happen outside the ng-repeat scope
-  // in order to $digest all it's child elements.
+  // in order to $digest all it's child elements. Wow, gross.
   $scope.selectedAnswer = null;
   $scope.selectedPlayer = null;
 
@@ -22,6 +22,18 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     } else {
       $scope.selectedPlayer = index;
     }
+  };
+
+  $scope.submit = function () {
+    $rootScope.socket.emit('guess', {
+      player: $scope.players[$scope.selectedPlayer],
+      answer: $scope.answers[$scope.selectedAnswer]
+    });
+  };
+
+  $scope.cancel = function () {
+    $scope.selectedAnswer = null;
+    $scope.selectedPlayer = null;
   };
 
   $rootScope.socket.on('join-leave', function (data) {
