@@ -9,9 +9,20 @@
   <h1 class="player-card" ng-repeat="player in players" ng-click="selectPlayer($index)" ng-class="{selected: selectedPlayer==$index}">{{player}}</h1>
 </div>
 
-<!-- confirmation window -->
+<!-- confirmation screen -->
 
-<div class="notification" ng-show="selectedPlayer !== null && selectedAnswer !== null">
+<div class="notification" ng-class="{visible: selectedPlayer !== null && selectedAnswer !== null}">
   <div class="button" ng-click="submit()">SUBMIT</div>
   <div class="button" ng-click="cancel()">CANCEL</div>
+</div>
+
+<!-- results screen -->
+
+<div class="notification" ng-class="{visible: currentTurn.who}">
+  <h2 class="guess user-guess" ng-class="{visible: currentTurn.who}">{{currentTurn.who}}</h2>
+  <h2>guessed that</h2>
+  <h2 class="guess player-guess" ng-class="{visible: currentTurn.player}">{{currentTurn.player}}</h2>
+  <h2>said</h2>
+  <h2 class="guess answer-guess" ng-class="{visible: currentTurn.answer}">{{currentTurn.answer}}</h2>
+  <h2 class="guess-result" ng-class="{visible: currentTurn.result}">{{currentTurn.result}}</h2>
 </div>

@@ -25,4 +25,5 @@ var fishbowl = angular.module('fishbowl', ['ngRoute'])
   $rootScope.username = '';
   $rootScope.room = null;
   $rootScope.socket = null;
+  $rootScope.score = 0;
 }]);

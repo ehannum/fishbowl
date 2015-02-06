@@ -3,6 +3,13 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.answers = [];
   $scope.prompt = '';
 
+  $scope.currentTurn = {
+    who: null,
+    player: null,
+    answer: null,
+    result: null
+  };
+
   // This logic needs to happen outside the ng-repeat scope
   // in order to $digest all it's child elements. Wow, gross.
   $scope.selectedAnswer = null;
@@ -25,12 +32,16 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   };
 
   $scope.submit = function () {
-    $rootScope.socket.emit('guess', {
-      username: $rootScope.username,
-      room: $rootScope.room,
-      player: $scope.players[$scope.selectedPlayer],
-      answer: $scope.answers[$scope.selectedAnswer]
-    });
+    if ($rootScope.username === $scope.players[$scope.selectedPlayer]) {
+      alert('You can\'t guess yourself you idiot!');
+    } else {
+      $rootScope.socket.emit('guess', {
+        username: $rootScope.username,
+        room: $rootScope.room,
+        player: $scope.players[$scope.selectedPlayer],
+        answer: $scope.answers[$scope.selectedAnswer]
+      });
+    }
     $scope.cancel();
   };
 
@@ -48,7 +59,34 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $rootScope.socket.on('guess', function (data) {
     // broadcast results, switch players if !data.result
-    $scope.$digest();
+
+    $timeout(function () {
+      $scope.currentTurn.who = data.username;
+    }, 1500);
+    $timeout(function () {
+      $scope.currentTurn.player = data.player;
+    }, 3000);
+    $timeout(function () {
+      $scope.currentTurn.answer = data.answer;
+    }, 4500);
+    $timeout(function () {
+      $scope.currentTurn.result = data.result ? 'CORRECT!' : 'WRONG!';
+
+      if (data.result) {
+        $rootScope.score++;
+      } else {
+        // ???
+      }
+      $rootScope.$digest();
+    }, 7500);
+    $timeout(function () {
+      $scope.currentTurn = {
+        who: null,
+        player: null,
+        answer: null,
+        result: null
+      };
+    }, 10000);
   });
 
   var unzipCards = function (stack) {
