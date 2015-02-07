@@ -119,6 +119,11 @@ h1 {
   background-color: #CCC;
 }
 
+.out {
+  background-color: #EEE;
+  color: #CCC;
+}
+
 .selected {
   border-color: red;
 }

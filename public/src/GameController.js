@@ -16,6 +16,9 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.selectedPlayer = null;
 
   $scope.selectAnswer = function (index) {
+    if ($scope.answers[index].out) {
+      return;
+    }
     if ($scope.selectedAnswer === index) {
       $scope.selectedAnswer = null;
     } else {
@@ -24,6 +27,9 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   };
 
   $scope.selectPlayer = function (index) {
+    if ($scope.players[index].out) {
+      return;
+    }
     if ($scope.selectedPlayer === index) {
       $scope.selectedPlayer = null;
     } else {
@@ -38,8 +44,8 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
       $rootScope.socket.emit('guess', {
         username: $rootScope.username,
         room: $rootScope.room,
-        player: $scope.players[$scope.selectedPlayer],
-        answer: $scope.answers[$scope.selectedAnswer]
+        player: $scope.players[$scope.selectedPlayer].name,
+        answer: $scope.answers[$scope.selectedAnswer].text
       });
     }
     $scope.cancel();
@@ -74,6 +80,18 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
       if (data.result) {
         $rootScope.score++;
+
+        for (var i = 0; i < $scope.players.length; i++) {
+          if ($scope.players[i].name === data.player) {
+            $scope.players[i].out = true;
+          }
+        }
+
+        for (var j = 0; j < $scope.answers.length; j++) {
+          if ($scope.answers[j].text === data.answer) {
+            $scope.answers[j].out = true;
+          }
+        }
       } else {
         // ???
       }
@@ -94,9 +112,9 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     var answers = [];
 
     for (var card in stack) {
-      players.push(stack[card].player);
+      players.push({name: stack[card].player, out: false});
       if (stack[card].answer) {
-        answers.push(stack[card].answer);
+        answers.push({text: stack[card].answer, out: false});
       }
     }
 
