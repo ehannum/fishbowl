@@ -22,7 +22,7 @@ io.on('connection', function (socket) {
     game.joinRoom(user, 0, socket.id);
 
     console.log('A user has connected.', game.rooms[0].players);
-    io.emit('join-leave', game.rooms[0].players);
+    io.emit('join-leave', game.rooms[0].players[socket.id]);
   });
 
   socket.on('guess', function (data) {

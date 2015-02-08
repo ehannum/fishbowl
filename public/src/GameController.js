@@ -38,7 +38,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   };
 
   $scope.submit = function () {
-    if ($rootScope.username === $scope.players[$scope.selectedPlayer]) {
+    if ($rootScope.username === $scope.players[$scope.selectedPlayer].name) {
       alert('You can\'t guess yourself you idiot!');
     } else {
       $rootScope.socket.emit('guess', {
@@ -59,7 +59,8 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   // socket.io stuff. Remember to $digest() manually...
 
   $rootScope.socket.on('join-leave', function (data) {
-    unzipCards(data);
+    $scope.players.push({name: data.player, out: true});
+    console.log(data);
     $scope.$digest();
   });
 
@@ -79,7 +80,9 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
       $scope.currentTurn.result = data.result ? 'CORRECT!' : 'WRONG!';
 
       if (data.result) {
-        $rootScope.score++;
+        if (data.username === $rootScope.username) {
+          $rootScope.score++;
+        }
 
         for (var i = 0; i < $scope.players.length; i++) {
           if ($scope.players[i].name === data.player) {
@@ -112,13 +115,13 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     var answers = [];
 
     for (var card in stack) {
-      players.push({name: stack[card].player, out: false});
+      players.push({name: stack[card].player, out: stack[card].out});
       if (stack[card].answer) {
-        answers.push({text: stack[card].answer, out: false});
+        answers.push({text: stack[card].answer, out: stack[card].out});
       }
     }
 
-    $scope.players = shuffle(players);
+    $scope.players = players;
     $scope.answers = shuffle(answers);
   };
 
