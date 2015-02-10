@@ -3,14 +3,17 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.answers = [];
   $scope.prompt = '';
 
-  $scope.currentTurn = {
+  $scope.phase = 1;
+  $scope.currentPlayer = null;
+
+  $scope.results = {
     who: null,
     player: null,
     answer: null,
     result: null
   };
 
-  // This logic needs to happen outside the ng-repeat scope
+  // Selection logic needs to happen outside the ng-repeat scope
   // in order to $digest all it's child elements. Wow, gross.
   $scope.selectedAnswer = null;
   $scope.selectedPlayer = null;
@@ -39,7 +42,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $scope.submit = function () {
     if ($rootScope.username === $scope.players[$scope.selectedPlayer].name) {
-      alert('You can\'t guess yourself you idiot!');
+      alert('You can\'t guess yourself ya bing-bong!');
     } else {
       $rootScope.socket.emit('guess', {
         username: $rootScope.username,
@@ -58,9 +61,13 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   // socket.io stuff. Remember to $digest() manually...
 
-  $rootScope.socket.on('join-leave', function (data) {
+  $rootScope.socket.on('player-join', function (data) {
     $scope.players.push({name: data.player, out: true});
-    console.log(data);
+    $scope.$digest();
+  });
+
+  $rootScope.socket.on('player-leave', function (data) {
+    unzipCards(data);
     $scope.$digest();
   });
 
@@ -68,16 +75,16 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     // broadcast results, switch players if !data.result
 
     $timeout(function () {
-      $scope.currentTurn.who = data.username;
+      $scope.results.who = data.username;
     }, 1500);
     $timeout(function () {
-      $scope.currentTurn.player = data.player;
+      $scope.results.player = data.player;
     }, 3000);
     $timeout(function () {
-      $scope.currentTurn.answer = data.answer;
+      $scope.results.answer = data.answer;
     }, 4500);
     $timeout(function () {
-      $scope.currentTurn.result = data.result ? 'CORRECT!' : 'WRONG!';
+      $scope.results.result = data.result ? 'CORRECT!' : 'WRONG!';
 
       if (data.result) {
         if (data.username === $rootScope.username) {
@@ -101,7 +108,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
       $rootScope.$digest();
     }, 7500);
     $timeout(function () {
-      $scope.currentTurn = {
+      $scope.results = {
         who: null,
         player: null,
         answer: null,
@@ -142,5 +149,9 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $http.get('/room?0').success(function (data) {
     $scope.prompt = data.prompt;
     unzipCards(data.players);
+
+    if ($scope.players.length === 1) {
+      $scope.currentPlayer = $rootScope.username;
+    }
   });
 }]);

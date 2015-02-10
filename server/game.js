@@ -1,12 +1,8 @@
 exports.rooms = [
   {
-
-    prompt: 'Answer a question.',
-    players: {
-      B: {player:'Joe', answer:'Yerba', out: false},
-      U: {player:'Lisa', answer:'Mostidas', out: false},
-      H: {player:'Brian', answer:'Stretch Armstrong', out: false}
-    }
+    phase: 1,
+    prompt: null,
+    players: {}
   }
 ];
 
@@ -14,7 +10,7 @@ exports.joinRoom = function (user, room, id) {
   if (!exports.rooms[room]) {
     exports.rooms.push({prompt:'', players: []});
   }
-  exports.rooms[room].players[id] = {player: user, answer: null, out: false};
+  exports.rooms[room].players[id] = {player: user, answer: null, out: true};
 };
 
 exports.leaveRoom = function (id, room) {

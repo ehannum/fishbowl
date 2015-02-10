@@ -121,6 +121,7 @@ h1, h2, h3, h4 {
   margin: 0 auto;
   border: 10px solid #FFF;
   background-color: #CCC;
+  overflow: hidden;
 }
 
 .out {

@@ -21,8 +21,8 @@ io.on('connection', function (socket) {
   socket.on('join', function (user) {
     game.joinRoom(user, 0, socket.id);
 
-    console.log('A user has connected.', game.rooms[0].players);
-    io.emit('join-leave', game.rooms[0].players[socket.id]);
+    console.log('A user has connected:', game.rooms[0].players[socket.id].player);
+    io.emit('player-join', game.rooms[0].players[socket.id]);
   });
 
   socket.on('guess', function (data) {
@@ -33,10 +33,10 @@ io.on('connection', function (socket) {
   });
 
   socket.on('disconnect', function () {
+    console.log('A user has disconnected.', game.rooms[0].players[socket.id].player);
     game.leaveRoom(socket.id, 0);
 
-    console.log('A user has disconnected.', game.rooms[0].players);
-    io.emit('join-leave', game.rooms[0].players);
+    io.emit('player-leave', game.rooms[0].players);
   });
 });
 
