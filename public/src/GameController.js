@@ -40,7 +40,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     }
   };
 
-  $scope.submit = function () {
+  $scope.submitGuess = function () {
     if ($rootScope.username === $scope.players[$scope.selectedPlayer].name) {
       alert('You can\'t guess yourself ya bing-bong!');
     } else {
@@ -54,9 +54,19 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.cancel();
   };
 
-  $scope.cancel = function () {
+  $scope.cancelGuess = function () {
     $scope.selectedAnswer = null;
     $scope.selectedPlayer = null;
+  };
+
+  $scope.submission = '';
+
+  $scope.submitPrompt = function () {
+    $rootScope.socket.emit('prompt', {
+      text: $scope.submission,
+      username: $rootScope.username,
+      room: $rootScope.room
+    });
   };
 
   // socket.io stuff. Remember to $digest() manually...
@@ -68,6 +78,12 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $rootScope.socket.on('player-leave', function (data) {
     unzipCards(data);
+    $scope.$digest();
+  });
+
+  $rootScope.socket.on('prompt', function (data) {
+    $scope.prompt = data.text;
+    $scope.phase = 2;
     $scope.$digest();
   });
 
@@ -148,6 +164,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $http.get('/room?0').success(function (data) {
     $scope.prompt = data.prompt;
+    $scope.phase = data.phase;
     unzipCards(data.players);
 
     if ($scope.players.length === 1) {

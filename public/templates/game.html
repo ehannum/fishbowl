@@ -12,8 +12,8 @@
 <!-- confirmation screen -->
 
 <div class="notification" ng-class="{visible: selectedPlayer !== null && selectedAnswer !== null}">
-  <div class="button" ng-click="submit()">SUBMIT</div>
-  <div class="button" ng-click="cancel()">CANCEL</div>
+  <div class="button" ng-click="submitGuess()">SUBMIT</div>
+  <div class="button" ng-click="cancelGuess()">CANCEL</div>
 </div>
 
 <!-- results screen -->
@@ -30,5 +30,8 @@
 <!-- prompt screen -->
 
 <div class="notification" ng-class="{visible: phase === 1 && currentPlayer === username}">
-  <p>TEST TEST</p>
+  <form ng-submit="submitPrompt">
+    <input type="text" ng-model="submission">
+    <input type="submit" class="button">
+  </form>
 </div>

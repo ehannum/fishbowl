@@ -32,6 +32,13 @@ io.on('connection', function (socket) {
     io.emit('guess', data);
   });
 
+  socket.on('prompt', function (data) {
+    game.rooms[data.room].phase = 2;
+
+    console.log(data.username, 'asked, "' + data.text + '"');
+    io.emit('prompt', data);
+  });
+
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', game.rooms[0].players[socket.id].player);
     game.leaveRoom(socket.id, 0);
