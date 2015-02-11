@@ -2,7 +2,11 @@ exports.rooms = [
   {
     phase: 1,
     prompt: null,
-    players: {}
+    players: {
+      // player: "string",
+      // answer: "string",
+      // out: boolean
+    }
   }
 ];
 
@@ -37,4 +41,22 @@ exports.guess = function (room, player, guess) {
   }
 
   return correct;
+};
+
+
+exports.answer = function (room, player, answer) {
+  var players = exports.rooms[room].players;
+  var complete = true;
+
+  for (var user in players) {
+    if (players[user].player === player) {
+      players[user].player.answer = answer;
+    }
+
+    if ((players[user].answer && players[user].out) || (!players[user].answer && !players[user].out)) {
+      complete = false;
+    }
+  }
+
+  return complete;
 };

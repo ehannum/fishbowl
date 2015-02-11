@@ -39,6 +39,17 @@ io.on('connection', function (socket) {
     io.emit('prompt', data);
   });
 
+  socket.on('answer', function (data) {
+    var complete = game.answer(data.room, data.username, data.text);
+
+    console.log(data.username, 'asked, "' + data.text + '"');
+
+    if (complete) {
+      game.rooms[data.room].phase = 3;
+      io.emit('all-answered', game.rooms[data.room].players);
+    }
+  });
+
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', game.rooms[0].players[socket.id].player);
     game.leaveRoom(socket.id, 0);

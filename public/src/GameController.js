@@ -87,6 +87,11 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.$digest();
   });
 
+  $rootScope.socket.on('all-answered', function (data) {
+    unzipCards(data);
+    $scope.$digest();
+  });
+
   $rootScope.socket.on('guess', function (data) {
     // broadcast results, switch players if !data.result
 
