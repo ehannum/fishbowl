@@ -67,12 +67,17 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
       username: $rootScope.username,
       room: $rootScope.room
     });
+    $scope.submission = '';
   };
 
   // socket.io stuff. Remember to $digest() manually...
 
   $rootScope.socket.on('player-join', function (data) {
     $scope.players.push({name: data.player, out: true});
+
+    if ($scope.players.length <= 1) {
+      $scope.currentPlayer = $rootScope.username;
+    }
     $scope.$digest();
   });
 
@@ -85,9 +90,23 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.prompt = data.text;
     $scope.phase = 2;
     $scope.$digest();
+
+    var answer = prompt($scope.prompt);
+
+    $rootScope.socket.emit('answer', {
+      text: answer,
+      username: $rootScope.username,
+      room: $rootScope.room
+    });
+
+    // start new round of play
+    for (var i = 0; i < $scope.players.length; i++) {
+      $scope.players[i].out = false;
+    }
   });
 
   $rootScope.socket.on('all-answered', function (data) {
+    $scope.phase = 3;
     unzipCards(data);
     $scope.$digest();
   });
@@ -150,7 +169,9 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     }
 
     $scope.players = players;
-    $scope.answers = shuffle(answers);
+    if ($scope.phase === 3) {
+      $scope.answers = shuffle(answers);
+    }
   };
 
   var shuffle = function (arr) {
@@ -171,9 +192,5 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.prompt = data.prompt;
     $scope.phase = data.phase;
     unzipCards(data.players);
-
-    if ($scope.players.length === 1) {
-      $scope.currentPlayer = $rootScope.username;
-    }
   });
 }]);

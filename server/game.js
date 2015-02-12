@@ -60,3 +60,11 @@ exports.answer = function (room, player, answer) {
 
   return complete;
 };
+
+exports.newRound = function (room) {
+  room = exports.rooms[room];
+
+  for (var player in room) {
+    room[player].out = false;
+  }
+};

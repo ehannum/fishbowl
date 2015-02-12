@@ -35,16 +35,17 @@ io.on('connection', function (socket) {
   socket.on('prompt', function (data) {
     game.rooms[data.room].phase = 2;
 
-    console.log(data.username, 'asked, "' + data.text + '"');
+    console.log(data.username, 'asked "' + data.text + '"');
     io.emit('prompt', data);
   });
 
   socket.on('answer', function (data) {
     var complete = game.answer(data.room, data.username, data.text);
 
-    console.log(data.username, 'asked, "' + data.text + '"');
+    console.log(data.username, 'said "' + data.text + '"');
 
     if (complete) {
+      console.log('All active players have answered.');
       game.rooms[data.room].phase = 3;
       io.emit('all-answered', game.rooms[data.room].players);
     }

@@ -30,7 +30,7 @@
 <!-- prompt screen -->
 
 <div class="notification" ng-class="{visible: phase === 1 && currentPlayer === username}">
-  <form ng-submit="submitPrompt">
+  <form ng-submit="submitPrompt()">
     <input type="text" ng-model="submission">
     <input type="submit" class="button">
   </form>
