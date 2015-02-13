@@ -68,7 +68,7 @@ h1, h2, h3, h4 {
   display: block;
   border-radius: 10px;
   border: 0;
-  margin: 10px 0;
+  margin: 10px auto;
 
   color: #FFF;
   font-size: 36px;
@@ -172,4 +172,14 @@ h1, h2, h3, h4 {
   margin-left: -50%;
   -webkit-transform: rotate(-20deg);
           transform: rotate(-20deg);
+}
+
+form {
+  width: 100%;
+}
+
+textarea {
+  width: 80%;
+  height: 200px;
+  border: 2px solid #333;
 }

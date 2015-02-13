@@ -19,7 +19,7 @@ exports.joinRoom = function (user, room, id) {
 
 exports.leaveRoom = function (id, room) {
   delete exports.rooms[room].players[id];
-  if (exports.rooms[room].players.length === 0) {
+  if (Object.keys(exports.rooms[room].players).length === 0) {
     exports.rooms[room] = null;
   }
 };
@@ -50,21 +50,24 @@ exports.answer = function (room, player, answer) {
 
   for (var user in players) {
     if (players[user].player === player) {
-      players[user].player.answer = answer;
+      players[user].answer = answer;
     }
 
-    if ((players[user].answer && players[user].out) || (!players[user].answer && !players[user].out)) {
+    if (!players[user].answer && !players[user].out) {
       complete = false;
     }
   }
+
+  console.log(players);
 
   return complete;
 };
 
 exports.newRound = function (room) {
   room = exports.rooms[room];
+  room.phase = 2;
 
-  for (var player in room) {
-    room[player].out = false;
+  for (var player in room.players) {
+    room.players[player].out = false;
   }
 };

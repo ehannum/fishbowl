@@ -41,7 +41,15 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   };
 
   $scope.submitGuess = function () {
-    if ($rootScope.username === $scope.players[$scope.selectedPlayer].name) {
+    var activePlayers = 0;
+
+    for (var i = 0; i < $scope.players.length; i++) {
+      if (!$scope.players[i].out) {
+        activePlayers++;
+      }
+    }
+
+    if ($rootScope.username === $scope.players[$scope.selectedPlayer].name && activePlayers > 1) {
       alert('You can\'t guess yourself ya bing-bong!');
     } else {
       $rootScope.socket.emit('guess', {
@@ -51,7 +59,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
         answer: $scope.answers[$scope.selectedAnswer].text
       });
     }
-    $scope.cancel();
+    $scope.cancelGuess();
   };
 
   $scope.cancelGuess = function () {
@@ -83,6 +91,10 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $rootScope.socket.on('player-leave', function (data) {
     unzipCards(data);
+
+    if ($scope.players.length <= 1) {
+      $scope.currentPlayer = $rootScope.username;
+    }
     $scope.$digest();
   });
 

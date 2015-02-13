@@ -33,7 +33,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('prompt', function (data) {
-    game.rooms[data.room].phase = 2;
+    game.newRound(data.room);
 
     console.log(data.username, 'asked "' + data.text + '"');
     io.emit('prompt', data);
@@ -52,8 +52,12 @@ io.on('connection', function (socket) {
   });
 
   socket.on('disconnect', function () {
+    if (!game.rooms[0].players[socket.id]) return;
+
     console.log('A user has disconnected.', game.rooms[0].players[socket.id].player);
     game.leaveRoom(socket.id, 0);
+
+    if (!game.rooms[0]) return;
 
     io.emit('player-leave', game.rooms[0].players);
   });
