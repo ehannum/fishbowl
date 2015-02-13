@@ -52,7 +52,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('disconnect', function () {
-    if (!game.rooms[0].players[socket.id]) return;
+    if (!game.rooms[0] || !game.rooms[0].players[socket.id]) return;
 
     console.log('A user has disconnected.', game.rooms[0].players[socket.id].player);
     game.leaveRoom(socket.id, 0);
