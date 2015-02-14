@@ -27,17 +27,20 @@ exports.leaveRoom = function (id, room) {
 exports.guess = function (room, player, guess) {
   var players = exports.rooms[room].players;
   var correct = false;
+  var activePlayers = 0;
 
   for (var answer in players) {
-    if (players[answer].player === player && players[answer].answer !== guess) {
-      break;
-    }
-
     if (players[answer].player === player && players[answer].answer === guess) {
       players[answer].out = true;
       correct = true;
-      break;
     }
+    if (!players[answer].out) {
+      activePlayers++;
+    }
+  }
+
+  if (activePlayers === 0) {
+    restart(room);
   }
 
   return correct;
@@ -69,5 +72,16 @@ exports.newRound = function (room) {
 
   for (var player in room.players) {
     room.players[player].out = false;
+  }
+};
+
+var restart = function (room) {
+  room = exports.rooms[room];
+  room.phase = 1;
+  room.prompt = null;
+
+  for (var player in room.players) {
+    room.players[player].out = true;
+    room.players[player].answer = null;
   }
 };

@@ -78,10 +78,30 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.submission = '';
   };
 
+  var gameOver = function () {
+    var activePlayers = 0;
+
+    for (var i = 0; i < $scope.players.length; i++) {
+      if (!$scope.players[i].out) {
+        activePlayers++;
+      }
+    }
+
+    if (activePlayers === 0 || $scope.players.length === 1) {
+      $scope.restart();
+    }
+  };
+
+  $scope.restart = function () {
+    $scope.prompt = '';
+    $scope.answers = [];
+    $scope.phase = 1;
+  };
+
   // socket.io stuff. Remember to $digest() manually...
 
   $rootScope.socket.on('player-join', function (data) {
-    $scope.players.push({name: data.player, out: true});
+    unzipCards(data);
 
     if ($scope.players.length <= 1) {
       $scope.currentPlayer = $rootScope.username;
@@ -91,6 +111,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $rootScope.socket.on('player-leave', function (data) {
     unzipCards(data);
+    gameOver();
 
     if ($scope.players.length <= 1) {
       $scope.currentPlayer = $rootScope.username;
@@ -154,6 +175,8 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
             $scope.answers[j].out = true;
           }
         }
+
+        gameOver();
       } else {
         // ???
       }
