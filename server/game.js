@@ -12,14 +12,14 @@ exports.rooms = [
 
 exports.joinRoom = function (user, room, id) {
   if (!exports.rooms[room]) {
-    exports.rooms.push({prompt:'', players: []});
+    exports.rooms.push({prompt:'', players: [], phase: 1});
   }
   exports.rooms[room].players[id] = {player: user, answer: null, out: true};
 };
 
 exports.leaveRoom = function (id, room) {
   delete exports.rooms[room].players[id];
-  if (Object.keys(exports.rooms[room].players).length === 0) {
+  if (Object.keys(exports.rooms[room].players).length === 0 && exports.rooms.length > 1) {
     exports.rooms[room] = null;
   }
 };
