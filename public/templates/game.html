@@ -36,3 +36,13 @@
     <input type="submit" class="button">
   </form>
 </div>
+
+<!-- answer screen -->
+
+<div class="notification" ng-class="{visible: phase === 2}">
+  <h2>{{prompt}}</h2>
+  <form ng-submit="submitAnswer()">
+    <textarea ng-model="submission"></textarea>
+    <input type="submit" class="button">
+  </form>
+</div>

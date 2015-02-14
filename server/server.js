@@ -46,7 +46,7 @@ io.on('connection', function (socket) {
 
     if (complete) {
       console.log('All active players have answered.');
-      game.rooms[data.room].phase = 3;
+      game.rooms[data.room].phase = 4;
       io.emit('all-answered', game.rooms[data.room].players);
     }
   });

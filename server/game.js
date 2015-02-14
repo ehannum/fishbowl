@@ -23,6 +23,9 @@ exports.leaveRoom = function (id, room) {
   if (Object.keys(exports.rooms[room].players).length === 0 && exports.rooms.length > 1) {
     exports.rooms[room] = null;
   }
+  if (exports.rooms[room].currentPlayer >= Object.keys(exports.rooms[room].players).length) {
+    exports.rooms[room].currentPlayer = 0;
+  }
 };
 
 exports.guess = function (room, player, guess) {
@@ -69,7 +72,9 @@ exports.answer = function (room, player, answer) {
 
 exports.newRound = function (room) {
   room = exports.rooms[room];
-  room.phase = 2;
+  // phase 2 is client side only, anyone joining while
+  // everyone else is on 2 should skip it.
+  room.phase = 3;
 
   for (var player in room.players) {
     room.players[player].out = false;
