@@ -4,7 +4,8 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.prompt = '';
 
   $scope.phase = 1;
-  $scope.currentPlayer = null;
+  $scope.currentPlayer = 0;
+  $scope.you = null;
 
   $scope.results = {
     who: null,
@@ -96,6 +97,10 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.prompt = '';
     $scope.answers = [];
     $scope.phase = 1;
+    $scope.currentPlayer++;
+    if ($scope.currentPlayer >= $scope.players.length) {
+      $scope.currentPlayer = 0;
+    }
   };
 
   // socket.io stuff. Remember to $digest() manually...
@@ -104,7 +109,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     unzipCards(data);
 
     if ($scope.players.length <= 1) {
-      $scope.currentPlayer = $rootScope.username;
+      $scope.currentPlayer = 0;
     }
     $scope.$digest();
   });
@@ -114,7 +119,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     gameOver();
 
     if ($scope.players.length <= 1) {
-      $scope.currentPlayer = $rootScope.username;
+      $scope.currentPlayer = 0;
     }
     $scope.$digest();
   });
@@ -175,8 +180,6 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
             $scope.answers[j].out = true;
           }
         }
-
-        gameOver();
       } else {
         // ???
       }
@@ -189,6 +192,8 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
         answer: null,
         result: null
       };
+
+      gameOver();
     }, 10000);
   });
 
@@ -204,6 +209,14 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     }
 
     $scope.players = players;
+
+    for (var i = 0; i < $scope.players.length; i++) {
+      if ($scope.players[i].name === $rootScope.username) {
+        $scope.you = i;
+        break;
+      }
+    }
+
     if ($scope.phase === 3) {
       $scope.answers = shuffle(answers);
     }
@@ -226,6 +239,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $http.get('/room?0').success(function (data) {
     $scope.prompt = data.prompt;
     $scope.phase = data.phase;
+    $scope.currentPlayer = data.currentPlayer;
     unzipCards(data.players);
   });
 }]);

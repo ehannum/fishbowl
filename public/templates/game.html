@@ -29,7 +29,7 @@
 
 <!-- prompt screen -->
 
-<div class="notification" ng-class="{visible: phase === 1 && currentPlayer === username && players.length > 1}">
+<div class="notification" ng-class="{visible: phase === 1 && currentPlayer === you && players.length > 1}">
   <h2>Ask a question:</h2>
   <form ng-submit="submitPrompt()">
     <textarea ng-model="submission"></textarea>

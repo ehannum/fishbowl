@@ -2,6 +2,7 @@ exports.rooms = [
   {
     phase: 1,
     prompt: null,
+    currentPlayer: 0,
     players: {
       // player: "string",
       // answer: "string",
@@ -79,6 +80,10 @@ var restart = function (room) {
   room = exports.rooms[room];
   room.phase = 1;
   room.prompt = null;
+  room.currentPlayer++;
+  if (room.currentPlayer >= room.players.length) {
+    room.currentPlayer = 0;
+  }
 
   for (var player in room.players) {
     room.players[player].out = true;
