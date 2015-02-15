@@ -1,5 +1,6 @@
 <div class="answers-window vertical-split">
   <p ng-hide="answers.length">{{prompt}}</p>
+  <p ng-hide="answers.length || prompt">Waiting for a new question...</p>
   <div class="answer-card" ng-repeat="answer in answers" ng-click="selectAnswer($index)" ng-class="{selected: selectedAnswer==$index,out:answer.out}">
     <p>{{answer.text}}</p>
   </div>
@@ -29,7 +30,7 @@
 
 <!-- prompt screen -->
 
-<div class="notification" ng-class="{visible: phase === 1 && currentPlayer === you && players.length > 1}">
+<div class="notification" ng-class="{visible: phase === 'ask' && currentPlayer === you && players.length > 1}">
   <h2>Ask a question:</h2>
   <form ng-submit="submitPrompt()">
     <textarea ng-model="submission"></textarea>
@@ -39,7 +40,7 @@
 
 <!-- answer screen -->
 
-<div class="notification" ng-class="{visible: phase === 2}">
+<div class="notification" ng-class="{visible: phase === 'answer'}">
   <h2>{{prompt}}</h2>
   <form ng-submit="submitAnswer()">
     <textarea ng-model="submission"></textarea>

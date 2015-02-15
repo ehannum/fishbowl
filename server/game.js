@@ -1,6 +1,6 @@
 exports.rooms = [
   {
-    phase: 1,
+    phase: 'ask',
     prompt: null,
     currentPlayer: 0,
     players: {
@@ -13,7 +13,7 @@ exports.rooms = [
 
 exports.joinRoom = function (user, room, id) {
   if (!exports.rooms[room]) {
-    exports.rooms.push({prompt:'', players: [], phase: 1});
+    exports.rooms.push({prompt:'', players: [], phase: 'ask'});
   }
   exports.rooms[room].players[id] = {player: user, answer: null, out: true};
 };
@@ -72,9 +72,7 @@ exports.answer = function (room, player, answer) {
 
 exports.newRound = function (room) {
   room = exports.rooms[room];
-  // phase 2 is client side only, anyone joining while
-  // everyone else is on 2 should skip it.
-  room.phase = 3;
+  room.phase = 'post-answer';
 
   for (var player in room.players) {
     room.players[player].out = false;
@@ -83,7 +81,7 @@ exports.newRound = function (room) {
 
 var restart = function (room) {
   room = exports.rooms[room];
-  room.phase = 1;
+  room.phase = 'ask';
   room.prompt = null;
   room.currentPlayer++;
   if (room.currentPlayer >= room.players.length) {

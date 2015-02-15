@@ -3,7 +3,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.answers = [];
   $scope.prompt = '';
 
-  $scope.phase = 1;
+  $scope.phase = null;
   $scope.currentPlayer = 0;
   $scope.you = null;
 
@@ -71,7 +71,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.submission = '';
 
   $scope.submitPrompt = function () {
-    $scope.phase = null; // while we wait, just do nothing
+    $scope.phase = 'post-ask';
     $rootScope.socket.emit('prompt', {
       text: $scope.submission,
       username: $rootScope.username,
@@ -81,7 +81,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   };
 
   $scope.submitAnswer = function () {
-    $scope.phase = 3;
+    $scope.phase = 'post-answer';
     $rootScope.socket.emit('answer', {
       text: $scope.submission,
       username: $rootScope.username,
@@ -113,12 +113,12 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $rootScope.socket.on('prompt', function (data) {
     $scope.prompt = data.text;
-    $scope.phase = 2;
+    $scope.phase = 'answer';
     $scope.$digest();
   });
 
   $rootScope.socket.on('all-answered', function (data) {
-    $scope.phase = 4;
+    $scope.phase = 'guess';
     unzipCards(data);
 
     // start new round of play
@@ -195,7 +195,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.restart = function () {
     $scope.prompt = '';
     $scope.answers = [];
-    $scope.phase = 1;
+    $scope.phase = 'ask';
     $scope.currentPlayer++;
     if ($scope.currentPlayer >= $scope.players.length) {
       $scope.currentPlayer = 0;
@@ -222,7 +222,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
       }
     }
 
-    if ($scope.phase === 4) {
+    if ($scope.phase === 'guess') {
       $scope.answers = shuffle(answers);
     }
   };
