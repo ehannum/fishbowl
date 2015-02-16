@@ -104,10 +104,6 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $rootScope.socket.on('player-leave', function (data) {
     unzipCards(data);
     gameOver();
-
-    if ($scope.players.length <= 1) {
-      $scope.currentPlayer = 0;
-    }
     $scope.$digest();
   });
 
@@ -187,7 +183,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
       }
     }
 
-    if (activePlayers === 0 || $scope.players.length === 1) {
+    if (activePlayers === 0 || $scope.players.length === 1 || $scope.phase === 'post-answer') {
       $scope.restart();
     }
   };

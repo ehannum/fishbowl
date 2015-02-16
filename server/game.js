@@ -19,6 +19,9 @@ exports.joinRoom = function (user, room, id) {
 };
 
 exports.leaveRoom = function (id, room) {
+  if (exports.rooms[room].phase === 'post-answer') {
+    exports.restart(room);
+  }
   delete exports.rooms[room].players[id];
   if (Object.keys(exports.rooms[room].players).length === 0 && exports.rooms.length > 1) {
     exports.rooms[room] = null;
@@ -64,8 +67,6 @@ exports.answer = function (room, player, answer) {
       complete = false;
     }
   }
-
-  console.log(players);
 
   return complete;
 };
