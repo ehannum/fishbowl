@@ -2,7 +2,7 @@ exports.rooms = [
   {
     phase: 'ask',
     prompt: null,
-    currentPlayer: 0,
+    currentAsker: 0,
     players: {
       // player: "string",
       // answer: "string",
@@ -20,14 +20,14 @@ exports.joinRoom = function (user, room, id) {
 
 exports.leaveRoom = function (id, room) {
   if (exports.rooms[room].phase === 'post-answer') {
-    exports.restart(room);
+    restart(room);
   }
   delete exports.rooms[room].players[id];
   if (Object.keys(exports.rooms[room].players).length === 0 && exports.rooms.length > 1) {
     exports.rooms[room] = null;
   }
-  if (exports.rooms[room].currentPlayer >= Object.keys(exports.rooms[room].players).length) {
-    exports.rooms[room].currentPlayer = 0;
+  if (exports.rooms[room].currentAsker >= Object.keys(exports.rooms[room].players).length) {
+    exports.rooms[room].currentAsker = 0;
   }
 };
 
@@ -84,9 +84,9 @@ var restart = function (room) {
   room = exports.rooms[room];
   room.phase = 'ask';
   room.prompt = null;
-  room.currentPlayer++;
-  if (room.currentPlayer >= room.players.length) {
-    room.currentPlayer = 0;
+  room.currentAsker++;
+  if (room.currentAsker >= room.players.length) {
+    room.currentAsker = 0;
   }
 
   for (var player in room.players) {

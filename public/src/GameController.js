@@ -4,7 +4,8 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.prompt = '';
 
   $scope.phase = null;
-  $scope.currentPlayer = 0;
+  $scope.currentAsker = 0;
+  $scope.currentGuesser = 1;
   $scope.you = null;
 
   $scope.results = {
@@ -96,7 +97,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     unzipCards(data);
 
     if ($scope.players.length <= 1) {
-      $scope.currentPlayer = 0;
+      $scope.currentAsker = 0;
     }
     $scope.$digest();
   });
@@ -192,9 +193,9 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.prompt = '';
     $scope.answers = [];
     $scope.phase = 'ask';
-    $scope.currentPlayer++;
-    if ($scope.currentPlayer >= $scope.players.length) {
-      $scope.currentPlayer = 0;
+    $scope.currentAsker++;
+    if ($scope.currentAsker >= $scope.players.length) {
+      $scope.currentAsker = 0;
     }
   };
 
@@ -240,7 +241,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $http.get('/room?0').success(function (data) {
     $scope.prompt = data.prompt;
     $scope.phase = data.phase;
-    $scope.currentPlayer = data.currentPlayer;
+    $scope.currentAsker = data.currentAsker;
     unzipCards(data.players);
   });
 }]);
