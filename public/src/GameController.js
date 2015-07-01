@@ -21,7 +21,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   $scope.selectedPlayer = null;
 
   $scope.selectAnswer = function (index) {
-    if ($scope.answers[index].out) {
+    if ($scope.answers[index].out || $scope.you !== $scope.currentGuesser) {
       return;
     }
     if ($scope.selectedAnswer === index) {
@@ -32,7 +32,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   };
 
   $scope.selectPlayer = function (index) {
-    if ($scope.players[index].out) {
+    if ($scope.players[index].out || $scope.you !== $scope.currentGuesser) {
       return;
     }
     if ($scope.selectedPlayer === index) {
@@ -157,7 +157,15 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
           }
         }
       } else {
-        // ???
+        (function nextActiveGuesser () {
+          $scope.currentGuesser++;
+          if ($scope.currentGuesser >= $scope.players.length) {
+            $scope.currentGuesser = 0;
+          }
+          if ($scope.currentAsker === $scope.currentGuesser || $scope.players[$scope.currentGuesser].out) {
+            nextActiveGuesser();
+          }
+        })();
       }
       $rootScope.$digest();
     }, 7500);
@@ -242,6 +250,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.prompt = data.prompt;
     $scope.phase = data.phase;
     $scope.currentAsker = data.currentAsker;
+    $scope.currentGuesser = data.currentAsker+1;
     unzipCards(data.players);
   });
 }]);
