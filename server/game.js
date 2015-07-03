@@ -63,6 +63,10 @@ exports.guess = function (room, player, guess) {
     restart(room);
   }
 
+  if (!correct) {
+    nextGuesser(room);
+  }
+
   return correct;
 };
 
@@ -89,6 +93,19 @@ exports.newRound = function (room) {
 
   for (var i = 0; i < room.players.length; i++) {
     room.players[i].out = false;
+  }
+};
+
+var nextGuesser = function (room) {
+  exports.rooms[room].currentGuesser++;
+
+  if (exports.rooms[room].currentGuesser >= exports.rooms[room].players.length) {
+    exports.rooms[room].currentGuesser = 0;
+  }
+
+  if (exports.rooms[room].players[exports.rooms[room].currentGuesser].out || exports.rooms[room].currentGuesser === exports.rooms[room].currentAsker) {
+    nextGuesser(room);
+    return;
   }
 };
 

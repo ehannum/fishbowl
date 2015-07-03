@@ -52,6 +52,7 @@ io.on('connection', function (socket) {
 
   socket.on('guess', function (data) {
     data.result = game.guess(data.room, data.player, data.answer);
+    data.currentGuesser = game.rooms[0].currentGuesser;
 
     console.log(data.username, 'guessed that', data.player, 'said', data.answer, '...', data.result ? 'CORRECT!' : 'WRONG!');
     io.emit('guess', data);

@@ -160,15 +160,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
           }
         }
       } else {
-        (function nextActiveGuesser () {
-          $scope.currentGuesser++;
-          if ($scope.currentGuesser >= $scope.players.length) {
-            $scope.currentGuesser = 0;
-          }
-          if ($scope.currentAsker === $scope.currentGuesser || $scope.players[$scope.currentGuesser].out) {
-            nextActiveGuesser();
-          }
-        })();
+        $scope.currentGuesser = data.currentGuesser;
       }
       $rootScope.$digest();
     }, 7500);
