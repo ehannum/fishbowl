@@ -2,11 +2,11 @@
   <p ng-hide="answers.length">{{prompt}}</p>
   <p ng-hide="answers.length || prompt">Waiting for a new question...</p>
   <div class="answer-card" ng-repeat="answer in answers" ng-click="selectAnswer($index)" ng-class="{selected: selectedAnswer==$index,out:answer.out}">
-    <p>{{answer.text}}</p>
+    <p class="answer-text">{{answer.text}}</p>
   </div>
 </div>
 <div class="players-window vertical-split">
-  <p ng-hide="players.length > 1">Waiting for other players...</p>
+  <p ng-hide="players.length > 2">Waiting for other players...</p>
   <div ng-hide="phase !== 'guess'">
     <p ng-hide="currentGuesser !== you">It is your turn to guess!</p>
     <p ng-hide="currentGuesser === you">{{players[currentGuesser].name}} is guessing...</p>
@@ -34,7 +34,7 @@
 
 <!-- prompt screen -->
 
-<div class="notification" ng-class="{visible: phase === 'ask' && currentAsker === you && players.length > 1}">
+<div class="notification" ng-class="{visible: phase === 'ask' && currentAsker === you && players.length > 2}">
   <h2>Ask a question:</h2>
   <form ng-submit="submitPrompt()">
     <textarea ng-model="submission"></textarea>

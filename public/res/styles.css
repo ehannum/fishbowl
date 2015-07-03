@@ -107,6 +107,19 @@ h1, h2, h3, h4 {
   display: inline-block;
   background-color: #CCC;
   border: 10px solid #FFF;
+  position: relative;
+}
+
+.answer-text {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .players-window {
@@ -152,7 +165,6 @@ h1, h2, h3, h4 {
 .guess {
   transition: opacity 1s linear;
   opacity: 0;
-  line-height: 0;
   margin: 30px 0;
 }
 
