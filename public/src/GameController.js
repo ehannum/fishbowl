@@ -212,11 +212,15 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   // initial room construction
 
   $http.get('/room?0').success(function (data) {
-    $scope.prompt = data.prompt;
-    $scope.phase = data.phase;
-    $scope.currentAsker = data.currentAsker;
-    $scope.currentGuesser = data.currentGuesser;
-    setupCards({players: data.players, answers: data.answers});
+    if (data.error) {
+      console.log('Empty room response: ' + data.error);
+    } else {
+      $scope.prompt = data.prompt;
+      $scope.phase = data.phase;
+      $scope.currentAsker = data.currentAsker;
+      $scope.currentGuesser = data.currentGuesser;
+      setupCards({players: data.players, answers: data.answers});
+    }
 
     $rootScope.socket.emit('join', $rootScope.username);
   });

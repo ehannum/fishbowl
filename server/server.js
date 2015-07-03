@@ -16,6 +16,10 @@ app.get('/room', function (req, res) {
 });
 
 var getRoomData = function (room) {
+  if (!game.rooms[room]) {
+    return {error: 'Room does not exist, creating room "' + room + '".'};
+  }
+
   // don't send any of the information about submitted answers
   var roomData = {
     prompt: game.rooms[room].prompt,

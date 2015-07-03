@@ -14,8 +14,10 @@ exports.rooms = [
 ];
 
 exports.joinRoom = function (name, room, id) {
+  console.log(exports.rooms[room]);
   if (!exports.rooms[room]) {
-    exports.rooms.push({prompt:'', players: [], phase: 'ask', currentGuesser: 1, currentAsker: 0});
+    console.log('Creating room:', room);
+    exports.rooms[room] = {prompt:'', players: [], phase: 'ask', currentGuesser: 1, currentAsker: 0};
   }
   exports.rooms[room].players.push({id: id, name: name, answer: null, out: true});
 };
@@ -37,7 +39,8 @@ exports.leaveRoom = function (id, room) {
   if (exports.rooms[room].currentAsker >= players.length) {
     exports.rooms[room].currentAsker = 0;
   }
-  if (players.length === 0 && exports.rooms.length > 1) {
+  if (players.length === 0) {
+    console.log('Deleting room:', room);
     exports.rooms[room] = null;
   }
 
