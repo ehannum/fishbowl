@@ -11,7 +11,6 @@ fishbowl.controller('SplashController', ['$scope', '$rootScope', '$http', '$loca
     $rootScope.username = prompt('Select a username:');
     $rootScope.room = 0;
 
-    $rootScope.socket.emit('join', $rootScope.username);
     $location.path('/game');
   };
 }]);

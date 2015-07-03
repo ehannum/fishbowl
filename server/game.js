@@ -3,32 +3,45 @@ exports.rooms = [
     phase: 'ask',
     prompt: null,
     currentAsker: 0,
-    players: {
-      // player: "string",
+    currentGuesser: 1,
+    players: [
+      // { id: "string",
+      // name: "string",
       // answer: "string",
-      // out: boolean
-    }
+      // out: boolean }
+    ]
   }
 ];
 
-exports.joinRoom = function (user, room, id) {
+exports.joinRoom = function (name, room, id) {
   if (!exports.rooms[room]) {
-    exports.rooms.push({prompt:'', players: [], phase: 'ask'});
+    exports.rooms.push({prompt:'', players: [], phase: 'ask', currentGuesser: 1, currentAsker: 0});
   }
-  exports.rooms[room].players[id] = {player: user, answer: null, out: true};
+  exports.rooms[room].players.push({id: id, name: name, answer: null, out: true});
 };
 
 exports.leaveRoom = function (id, room) {
+  var players = exports.rooms[room].players;
+  var name = '';
   if (exports.rooms[room].phase === 'post-answer') {
     restart(room);
   }
-  delete exports.rooms[room].players[id];
-  if (Object.keys(exports.rooms[room].players).length === 0 && exports.rooms.length > 1) {
-    exports.rooms[room] = null;
+
+  for (var i = 0; i < players.length; i++) {
+    if (players[i].id === id) {
+      name = players[i].name;
+      players.splice(i, 1);
+      break;
+    }
   }
-  if (exports.rooms[room].currentAsker >= Object.keys(exports.rooms[room].players).length) {
+  if (exports.rooms[room].currentAsker >= players.length) {
     exports.rooms[room].currentAsker = 0;
   }
+  if (players.length === 0 && exports.rooms.length > 1) {
+    exports.rooms[room] = null;
+  }
+
+  return name;
 };
 
 exports.guess = function (room, player, guess) {
@@ -37,7 +50,7 @@ exports.guess = function (room, player, guess) {
   var activePlayers = 0;
 
   for (var answer in players) {
-    if (players[answer].player === player && players[answer].answer === guess) {
+    if (players[answer].name === player && players[answer].answer === guess) {
       players[answer].out = true;
       correct = true;
     }
@@ -53,17 +66,16 @@ exports.guess = function (room, player, guess) {
   return correct;
 };
 
-
 exports.answer = function (room, player, answer) {
   var players = exports.rooms[room].players;
   var complete = true;
 
-  for (var user in players) {
-    if (players[user].player === player) {
-      players[user].answer = answer;
+  for (var i = 0; i < players.length; i++) {
+    if (players[i].name === player){
+      players[i].answer = answer;
     }
 
-    if (!players[user].answer && !players[user].out) {
+    if (!players[i].answer && !players[i].out) {
       complete = false;
     }
   }
@@ -75,8 +87,8 @@ exports.newRound = function (room) {
   room = exports.rooms[room];
   room.phase = 'post-answer';
 
-  for (var player in room.players) {
-    room.players[player].out = false;
+  for (var i = 0; i < room.players.length; i++) {
+    room.players[i].out = false;
   }
 };
 
@@ -89,8 +101,20 @@ var restart = function (room) {
     room.currentAsker = 0;
   }
 
-  for (var player in room.players) {
-    room.players[player].out = true;
-    room.players[player].answer = null;
+  for (var i = 0; i < room.players.length; i++) {
+    room.players[i].out = true;
+    room.players[i].answer = null;
   }
+};
+
+exports.shuffle = function (arr) {
+  var result = [];
+
+  while (arr.length) {
+    var randomIndex = Math.floor(Math.random()*arr.length);
+    var randomElement = arr.splice(randomIndex, 1);
+    result.push(randomElement[0]);
+  }
+
+  return result;
 };

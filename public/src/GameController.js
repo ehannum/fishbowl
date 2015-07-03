@@ -94,16 +94,19 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
   // socket.io stuff. Remember to $digest() manually...
 
   $rootScope.socket.on('player-join', function (data) {
-    unzipCards(data);
+    setupCards(data);
 
-    if ($scope.players.length <= 1) {
-      $scope.currentAsker = 0;
+    for (var i = 0; i < data.players.length; i++) {
+      if (data.players[i].name === $rootScope.username) {
+        $scope.you = i;
+      }
     }
+
     $scope.$digest();
   });
 
   $rootScope.socket.on('player-leave', function (data) {
-    unzipCards(data);
+    setupCards(data);
     gameOver();
     $scope.$digest();
   });
@@ -116,7 +119,7 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
 
   $rootScope.socket.on('all-answered', function (data) {
     $scope.phase = 'guess';
-    unzipCards(data);
+    setupCards(data);
 
     // start new round of play
     for (var i = 0; i < $scope.players.length; i++) {
@@ -207,41 +210,11 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     }
   };
 
-  var unzipCards = function (stack) {
-    var players = [];
-    var answers = [];
-
-    for (var card in stack) {
-      players.push({name: stack[card].player, out: stack[card].out});
-      if (stack[card].answer) {
-        answers.push({text: stack[card].answer, out: stack[card].out});
-      }
-    }
-
-    $scope.players = players;
-
-    for (var i = 0; i < $scope.players.length; i++) {
-      if ($scope.players[i].name === $rootScope.username) {
-        $scope.you = i;
-        break;
-      }
-    }
-
+  var setupCards = function (cards) {
+    $scope.players = cards.players;
     if ($scope.phase === 'guess') {
-      $scope.answers = shuffle(answers);
+      $scope.answers = cards.answers;
     }
-  };
-
-  var shuffle = function (arr) {
-    var result = [];
-
-    while (arr.length) {
-      var randomIndex = Math.floor(Math.random()*arr.length);
-      var randomElement = arr.splice(randomIndex, 1);
-      result.push(randomElement[0]);
-    }
-
-    return result;
   };
 
   // initial room construction
@@ -250,7 +223,9 @@ fishbowl.controller('GameController', ['$scope', '$rootScope', '$http', '$timeou
     $scope.prompt = data.prompt;
     $scope.phase = data.phase;
     $scope.currentAsker = data.currentAsker;
-    $scope.currentGuesser = data.currentAsker+1;
-    unzipCards(data.players);
+    $scope.currentGuesser = data.currentGuesser;
+    setupCards({players: data.players, answers: data.answers});
+
+    $rootScope.socket.emit('join', $rootScope.username);
   });
 }]);
